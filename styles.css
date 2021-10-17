@@ -2,8 +2,56 @@ body{
     background-color:#1a1a1d;
     height: 100vh;
     width: 100vw;
-
+display:flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+.grid-item{
+    /*border:2px solid #3500d3;color:white; text-align:center;padding:50px;font-size:35px;font-family:sans-serif;background-color:#1a1a1d;*/
 }
 #game-grid{
     background-color: #3500d3;
+}
+#pad{
+    display:flex;
+    width:100vw;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#grid-restart{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+#tac{
+    padding-left: 50px;
+}
+#title{
+    margin-top:auto;
+    margin-bottom: 150px;
+    color:white;
+    font-size: 80px;
+    transform: rotate(335deg);
+    height:300px;
+    display:flex;
+    flex-direction: column;
+    justify-content: stretch;
+    
+}
+#player-turn{
+    color:white;
+    font-size:50px;
+}
+
+#restart-button{
+    color:white;
+    background-color:#3500d3;
+    width:180px;
+    border-radius: 10px;
+    text-align: center;
+    padding:20px;
+    margin-top:50px;
+    font-size: 30px;
+    font-weight: bold;
 }

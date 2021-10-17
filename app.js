@@ -1,14 +1,20 @@
-let playerOne = playerFactory("X");
+function startGame()
+{let playerOne = playerFactory("X");
 let playerTwo = playerFactory("O");
-
 const selectors = (function () {
   let gameGrid = document.querySelector("#game-grid");
-
   return { gameGrid };
 })();
 
+const staticListeners = (function () {
+  let playerTurnDiv = document.querySelector("#player-turn");
+  let resetButton = document.querySelector("#restart-button");
+  return {resetButton, playerTurnDiv };
+})();
+
 const gameBoard = (function () {
-  selectors.gameGrid.setAttribute(
+    selectors.gameGrid.innerHTML = "";
+    selectors.gameGrid.setAttribute(
     "style",
     "display:grid; grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);height:450px;width:450px;border:5px solid #3500d3"
   );
@@ -17,10 +23,15 @@ const gameBoard = (function () {
     gridItem.className = "grid-item";
     gridItem.gridpos = i;
     selectors.gameGrid.appendChild(gridItem);
+    gridItem.setAttribute(
+      "style",
+      "border:2px solid #3500d3;color:white; text-align:center;padding:50px;font-size:35px;font-family:sans-serif;background-color:#1a1a1d;"
+    );
   }
+
   let gridItems = document.querySelectorAll(".grid-item");
   let gameStateArray = ["", "", "", "", "", "", "", "", ""];
-
+  
   function setGameState(index, playerSelection) {
     gameStateArray.splice(index, 1, playerSelection);
   }
@@ -30,67 +41,89 @@ const gameBoard = (function () {
   return { gameStateArray, gridItems, setGameState, getGameState };
 })(selectors);
 
-const displayController = (function () {
-  console.log(gameBoard.gridItems);
-  function displayContents() {
-    Array.from(gameBoard.gridItems).forEach((gridItem) => {
-      gridItem.setAttribute(
-        "style",
-        "border:2px solid #3500d3;color:white; text-align:center;padding:50px;font-size:35px;font-family:sans-serif;background-color:#1a1a1d;"
-      );
-    });
-  }
-  displayContents();
-})(gameBoard, selectors);
-
-const listeners = (function () {
-  gameBoard.gridItems.forEach((gridItem) => {
-    gridItem.addEventListener("click", placeSymbol);
-  });
-
+const gameController = (function () {
   let currentPlayerSymbol = "X";
+  staticListeners.playerTurnDiv.innerText = "Player X turn";
   function setCurrentPlayerSymbol(symbol) {
     currentPlayerSymbol = symbol;
   }
   function getCurrentPlayerSymbol() {
     return currentPlayerSymbol;
   }
+
+  function turnController(e) {
+    if (getCurrentPlayerSymbol() === "X") {
+      staticListeners.playerTurnDiv.innerText = "Player O turn";
+      playerOne.play(e);
+    } else {
+      staticListeners.playerTurnDiv.innerText = "Player X turn";
+      playerTwo.play(e);
+    }
+  }
+  function checkTieState(){
+    if (gameBoard.getGameState().indexOf("") === -1 && !(playerOne.playerWinState() || playerTwo.playerWinState())){
+      console.log("game tied");
+      staticListeners.playerTurnDiv.innerText = "Game Tied";
+    }
+  }
+  function checkWinState() {
+    if (playerOne.playerWinState() || playerTwo.playerWinState()) {
+      console.log(playerOne.playerWinState() || playerTwo.playerWinState());
+      staticListeners.playerTurnDiv.innerText =
+        playerOne.playerWinState() || playerTwo.playerWinState();
+      gameBoard.gridItems.forEach((gridItem) => {
+        gridItem.replaceWith(gridItem.cloneNode(true));
+        console.log("removing listeners");
+      });
+    }
+  }
+  function gameProgressChecker(e) {
+    checkTieState();
+    checkWinState();
+    if (gameBoard.getGameState().indexOf("") !== -1) {
+      e.target.innerText = currentPlayerSymbol;
+      turnController(e);
+    }
+  }
+
   function placeSymbol(e) {
     console.log(currentPlayerSymbol);
     console.log(e.target.gridpos);
-    if(playerOne.playerWinState()|| playerTwo.playerWinState()){
-        console.log(playerOne.playerWinState()||playerTwo.playerWinState());
-        let gridItems = document.querySelectorAll(".grid-item");
-    gridItems.forEach((gridItem) => {
-    gridItem.replaceWith(gridItem.cloneNode(true));
-  });
-    }
-
-    if(gameBoard.getGameState().indexOf("")!==-1)
-    {e.target.innerText = currentPlayerSymbol;
-    gameController(e);}
-   
+    gameProgressChecker(e);
+    checkWinState();
+    checkTieState();
   }
-  return { placeSymbol, setCurrentPlayerSymbol, getCurrentPlayerSymbol };
-})(selectors, gameBoard);
+  return {
+    turnController,
+    placeSymbol,
+    setCurrentPlayerSymbol,
+    getCurrentPlayerSymbol,
+  };
+})(gameBoard);
 
-function gameController(e) {
-  if (listeners.getCurrentPlayerSymbol() === "X") {
-    playerOne.play(e);
-  } else {
-    playerTwo.play(e);
-  }
-}
+const dynamicListeners = (function () {
+  function attachListeners(){
+  gameBoard.gridItems.forEach((gridItem) => {
+    gridItem.addEventListener("click", gameController.placeSymbol);
+    console.log("listener attached");
+  });}
+  attachListeners();
+  return {attachListeners};
+})(gameBoard, gameController);
+
 
 function playerFactory(playerSymbol) {
   function play(e) {
     if (gameBoard.getGameState()[e.target.gridpos] === "") {
-      gameBoard.setGameState(e.target.gridpos,listeners.getCurrentPlayerSymbol());
+      gameBoard.setGameState(
+        e.target.gridpos,
+        gameController.getCurrentPlayerSymbol()
+      );
       console.log(gameBoard.gameStateArray);
-      if (listeners.getCurrentPlayerSymbol() === "X") {
-        listeners.setCurrentPlayerSymbol("O");
+      if (gameController.getCurrentPlayerSymbol() === "X") {
+        gameController.setCurrentPlayerSymbol("O");
       } else {
-        listeners.setCurrentPlayerSymbol("X");
+        gameController.setCurrentPlayerSymbol("X");
       }
     }
   }
@@ -105,9 +138,9 @@ function playerFactory(playerSymbol) {
     [0, 4, 8],
     [2, 4, 6],
   ];
+
   function playerWinState() {
     let currentGameArray = gameBoard.getGameState();
-    //let currentGameArray = ["X", "X", "O", "O", "X", "X", "X", "X", "O"];
     for (i = 0; i < winConditionState.length; i++) {
       if (
         currentGameArray[winConditionState[i][0]] === playerSymbol &&
@@ -120,10 +153,14 @@ function playerFactory(playerSymbol) {
   }
   return { playerSymbol, playerWinState, play };
 }
+}
+startGame();
 
-
-let playerOneWinMsg = playerOne.playerWinState();
-let playerTwoWinMsg = playerTwo.playerWinState();
-console.log(playerOneWinMsg); 
-console.log(playerTwoWinMsg);
-
+const resetGame = (function(){
+  let resetButton = document.querySelector("#restart-button");
+  resetButton.addEventListener("click",reset);
+  function reset(){
+    startGame();
+  }
+  return {reset};
+})()
