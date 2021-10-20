@@ -1,75 +1,17 @@
+import {selectedNodes,domStuff} from './dom.js';
+import {gameBoard} from './gameLogic.js';
 function startGame()
-{let playerOne = playerFactory("X");
+{
+  //setting up game
+console.log("starting");
+let playerOne = playerFactory("X");
 let playerTwo = playerFactory("O");
-const selectors = (function () {
-  let gameGrid = document.querySelector("#game-grid");
-  return { gameGrid };
-})();
 
-const staticListeners = (function () {
-  let playerTurnDiv = document.querySelector("#player-turn");
-  let resetButton = document.querySelector("#restart-button");
-  return {resetButton, playerTurnDiv };
-})();
-
-const gameBoard = (function () {
-  //domstuff
-    selectors.gameGrid.innerHTML = "";
-    selectors.gameGrid.setAttribute(
-    "style",
-    "display:grid; grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);height:450px;width:450px;border:5px solid #3500d3"
-  );
-  for (let i = 0; i < 9; i++) {
-    let gridItem = document.createElement("div");
-    gridItem.className = "grid-item";
-    gridItem.gridpos = i;
-    selectors.gameGrid.appendChild(gridItem);
-    gridItem.setAttribute(
-      "style",
-      "border:2px solid #3500d3;color:white; text-align:center;padding:50px;font-size:35px;font-family:sans-serif;background-color:#1a1a1d;"
-    );
-  } //dom stuff
-
-  let gridItems = document.querySelectorAll(".grid-item");
-  let gameStateArray = ["", "", "", "", "", "", "", "", ""];
-  
-  function setGameState(index, playerSelection) {
-    gameStateArray.splice(index, 1, playerSelection);
-  }
-  function getGameState() {
-    return gameStateArray;
-  }
-  return { gameStateArray, gridItems, setGameState, getGameState };
-})(selectors);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+gameBoard.resetGameState();
+// setup over
+//dom stuff
+domStuff.resetGrid();
+domStuff.gridItems = document.querySelectorAll(".grid-item");
 
 
 
@@ -78,36 +20,36 @@ const gameBoard = (function () {
 
 const gameController = (function () {
   let currentPlayerSymbol = "X";
-  staticListeners.playerTurnDiv.innerText = "Player X turn"; // dom stuff
+  selectedNodes.playerTurnDiv.innerText = "Player X turn"; // dom stuff
   function setCurrentPlayerSymbol(symbol) {
     currentPlayerSymbol = symbol;
   }
   function getCurrentPlayerSymbol() {
     return currentPlayerSymbol;
   }
-
+                                                                                      //needs selectedNodes gameBoard playerOne playerTwo playerFactory  domStuff 
   function turnController(e) {
     if (getCurrentPlayerSymbol() === "X") {
-      staticListeners.playerTurnDiv.innerText = "Player O turn"; //dom stuff
+      selectedNodes.playerTurnDiv.innerText = "Player O turn"; //dom stuff
       playerOne.play(e);
     } else {
-      staticListeners.playerTurnDiv.innerText = "Player X turn"; //dom stuff
+      selectedNodes.playerTurnDiv.innerText = "Player X turn"; //dom stuff
       playerTwo.play(e);
     }
   }
   function checkTieState(){
     if (gameBoard.getGameState().indexOf("") === -1 && !(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState())){
       console.log("game tied");
-      staticListeners.playerTurnDiv.innerText = "Game Tied"; //dom stuff
+      selectedNodes.playerTurnDiv.innerText = "Game Tied"; //dom stuff
     }
   }
   function checkWinState() {
     if (playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState()) {
       console.log(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState());
       //dom stuff
-      staticListeners.playerTurnDiv.innerText =
+      selectedNodes.playerTurnDiv.innerText =
         playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState();
-      gameBoard.gridItems.forEach((gridItem) => {
+      domStuff.gridItems.forEach((gridItem) => {
         gridItem.replaceWith(gridItem.cloneNode(true));
         console.log("removing listeners");
       });//dom stuff
@@ -139,12 +81,15 @@ const gameController = (function () {
 //dom stuff
 const dynamicListeners = (function () {
   function attachListeners(){
-  gameBoard.gridItems.forEach((gridItem) => {
+    console.log("attaching");
+    console.log(domStuff.gridItems)
+
+  domStuff.gridItems.forEach((gridItem) => {
     gridItem.addEventListener("click", gameController.placeSymbol,{once:true});
     console.log("listener attached");
   });}
   attachListeners();
-  return {attachListeners};
+  return {};
 }//dom stuff
 )(gameBoard, gameController);
 
@@ -199,7 +144,7 @@ function playerFactory(playerSymbol) {
 
   function checkPlayerWinState() {
     let currentGameArray = gameBoard.getGameState();
-    for (i = 0; i < winConditionState.length; i++) {
+    for (let i = 0; i < winConditionState.length; i++) {
       if (
         currentGameArray[winConditionState[i][0]] === playerSymbol &&
         currentGameArray[winConditionState[i][1]] === playerSymbol &&
@@ -218,7 +163,12 @@ const resetGame = (function(){
   let resetButton = document.querySelector("#restart-button");
   resetButton.addEventListener("click",reset);
   function reset(){
+    console.log('restarting');
     startGame();
   }
   return {reset};
 })()
+
+
+
+//export{gameBoard};
