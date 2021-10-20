@@ -13,6 +13,7 @@ const staticListeners = (function () {
 })();
 
 const gameBoard = (function () {
+  //domstuff
     selectors.gameGrid.innerHTML = "";
     selectors.gameGrid.setAttribute(
     "style",
@@ -27,7 +28,7 @@ const gameBoard = (function () {
       "style",
       "border:2px solid #3500d3;color:white; text-align:center;padding:50px;font-size:35px;font-family:sans-serif;background-color:#1a1a1d;"
     );
-  }
+  } //dom stuff
 
   let gridItems = document.querySelectorAll(".grid-item");
   let gameStateArray = ["", "", "", "", "", "", "", "", ""];
@@ -41,9 +42,43 @@ const gameBoard = (function () {
   return { gameStateArray, gridItems, setGameState, getGameState };
 })(selectors);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const gameController = (function () {
   let currentPlayerSymbol = "X";
-  staticListeners.playerTurnDiv.innerText = "Player X turn";
+  staticListeners.playerTurnDiv.innerText = "Player X turn"; // dom stuff
   function setCurrentPlayerSymbol(symbol) {
     currentPlayerSymbol = symbol;
   }
@@ -53,35 +88,36 @@ const gameController = (function () {
 
   function turnController(e) {
     if (getCurrentPlayerSymbol() === "X") {
-      staticListeners.playerTurnDiv.innerText = "Player O turn";
+      staticListeners.playerTurnDiv.innerText = "Player O turn"; //dom stuff
       playerOne.play(e);
     } else {
-      staticListeners.playerTurnDiv.innerText = "Player X turn";
+      staticListeners.playerTurnDiv.innerText = "Player X turn"; //dom stuff
       playerTwo.play(e);
     }
   }
   function checkTieState(){
-    if (gameBoard.getGameState().indexOf("") === -1 && !(playerOne.playerWinState() || playerTwo.playerWinState())){
+    if (gameBoard.getGameState().indexOf("") === -1 && !(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState())){
       console.log("game tied");
-      staticListeners.playerTurnDiv.innerText = "Game Tied";
+      staticListeners.playerTurnDiv.innerText = "Game Tied"; //dom stuff
     }
   }
   function checkWinState() {
-    if (playerOne.playerWinState() || playerTwo.playerWinState()) {
-      console.log(playerOne.playerWinState() || playerTwo.playerWinState());
+    if (playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState()) {
+      console.log(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState());
+      //dom stuff
       staticListeners.playerTurnDiv.innerText =
-        playerOne.playerWinState() || playerTwo.playerWinState();
+        playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState();
       gameBoard.gridItems.forEach((gridItem) => {
         gridItem.replaceWith(gridItem.cloneNode(true));
         console.log("removing listeners");
-      });
+      });//dom stuff
     }
   }
   function gameProgressChecker(e) {
     checkTieState();
     checkWinState();
     if (gameBoard.getGameState().indexOf("") !== -1) {
-      e.target.innerText = currentPlayerSymbol;
+      e.target.innerText = currentPlayerSymbol; //dom stuff
       turnController(e);
     }
   }
@@ -100,16 +136,38 @@ const gameController = (function () {
     getCurrentPlayerSymbol,
   };
 })(gameBoard);
-
+//dom stuff
 const dynamicListeners = (function () {
   function attachListeners(){
   gameBoard.gridItems.forEach((gridItem) => {
-    gridItem.addEventListener("click", gameController.placeSymbol);
+    gridItem.addEventListener("click", gameController.placeSymbol,{once:true});
     console.log("listener attached");
   });}
   attachListeners();
   return {attachListeners};
-})(gameBoard, gameController);
+}//dom stuff
+)(gameBoard, gameController);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function playerFactory(playerSymbol) {
@@ -139,7 +197,7 @@ function playerFactory(playerSymbol) {
     [2, 4, 6],
   ];
 
-  function playerWinState() {
+  function checkPlayerWinState() {
     let currentGameArray = gameBoard.getGameState();
     for (i = 0; i < winConditionState.length; i++) {
       if (
@@ -151,7 +209,7 @@ function playerFactory(playerSymbol) {
       }
     }
   }
-  return { playerSymbol, playerWinState, play };
+  return { playerSymbol, checkPlayerWinState, play };
 }
 }
 startGame();
