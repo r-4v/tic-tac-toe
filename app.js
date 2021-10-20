@@ -1,39 +1,17 @@
-import {selectedNodes,domStuff} from './dom.js';
+import {selectedNodes,domStuff} from './domsetup.js';
+import { dynamicListeners } from './domManipulate.js';
 import {gameBoard,gameController} from './gameLogic.js';
 function startGame()
 {
-  //setting up game
+//setting up game
 console.log("starting");
-
-
 gameBoard.resetGameState();
 // setup over
-//dom stuff
+//dom setup
 domStuff.resetGrid();
 domStuff.gridItems = document.querySelectorAll(".grid-item");
-
-
-
-
-
-
-
-//dom stuff
-
-
-const dynamicListeners = (function () {
-  function attachListeners(){
-    console.log("attaching");
-    console.log(domStuff.gridItems)
-
-  domStuff.gridItems.forEach((gridItem) => {
-    gridItem.addEventListener("click", gameController.placeSymbol,{once:true});
-    console.log("listener attached");
-  });}
-  attachListeners();
-  return {};
-}//dom stuff
-)(gameBoard, gameController);
+//dom manipulate
+dynamicListeners.attachListeners();
 
 }
 startGame();
@@ -48,6 +26,3 @@ const resetGame = (function(){
   return {reset};
 })()
 
-
-
-//export{gameBoard};

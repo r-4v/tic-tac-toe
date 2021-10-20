@@ -1,4 +1,4 @@
-import {selectedNodes,domStuff} from './dom.js';
+import {selectedNodes,domStuff} from './domsetup.js';
 import { playerFactory } from './playerFactory.js';
 const gameBoard = (function () {
     let gameStateArray = ["", "", "", "", "", "", "", "", ""];
