@@ -1,11 +1,10 @@
-//import { gameBoard } from "./app";
 const selectedNodes = (function () {
     let gameGrid = document.querySelector("#game-grid");
     let playerTurnDiv = document.querySelector("#player-turn");
     let resetButton = document.querySelector("#restart-button");
     return {resetButton, playerTurnDiv,gameGrid };
   })();
-  // dom stuff
+ 
   const domStuff = (function(){
       function resetGrid(){
     selectedNodes.gameGrid.innerHTML = "";
@@ -26,13 +25,8 @@ const selectedNodes = (function () {
 }
 resetGrid();
 let gridItems = document.querySelectorAll(".grid-item");
-
-
-  
   return {gridItems,resetGrid};
-  
   })();
-  
   
 export {selectedNodes,domStuff};
   
