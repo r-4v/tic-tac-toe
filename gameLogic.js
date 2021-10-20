@@ -19,25 +19,24 @@ let playerTwo = playerFactory("O");
 
   const gameController = (function () {
     
-    let currentPlayerSymbol ;// dom stuff
+    let currentPlayerSymbol ;
     function setInitialGameState(){
         currentPlayerSymbol = "X";
         actionNodes.gameInfoDisplay("Player X turn");
     } 
-    //initial stage set -----------------------------
     function setCurrentPlayerSymbol(symbol) {
       currentPlayerSymbol = symbol;
     }
     function getCurrentPlayerSymbol() {
       return currentPlayerSymbol;
     }
-                                                                                        //needs actionNodes gameBoard playerOne playerTwo playerFactory  domStuff 
+
     function turnController(e) {
       if (getCurrentPlayerSymbol() === "X") {
-        actionNodes.gameInfoDisplay( "Player O turn"); //dom stuff
+        actionNodes.gameInfoDisplay( "Player O turn");
         playerOne.play(e);
       } else {
-        actionNodes.gameInfoDisplay("Player X turn"); //dom stuff
+        actionNodes.gameInfoDisplay("Player X turn"); 
         playerTwo.play(e);
       }
     }
@@ -53,25 +52,23 @@ let playerTwo = playerFactory("O");
       checkTieState();
       checkWinState();
       if (gameBoard.getGameState().indexOf("") !== -1) {
-        domStuff.playerChoiceSetter(e,currentPlayerSymbol); //dom stuff
+        domStuff.playerChoiceSetter(e,currentPlayerSymbol); 
         turnController(e);
       }
     }
     function checkTieState(){
       if (gameBoard.getGameState().indexOf("") === -1 && !(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState())){
         console.log("game tied");
-        actionNodes.gameInfoDisplay("Game Tied"); //dom stuff
+        actionNodes.gameInfoDisplay("Game Tied"); 
       }
     }
     function checkWinState() {
       if (playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState()) {
         console.log(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState());
-        //dom stuff
         actionNodes.gameInfoDisplay(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState());
         actionNodes.removeListeners();
       }
     }
-  
     return {
       turnController,
       placeSymbol,
@@ -80,10 +77,5 @@ let playerTwo = playerFactory("O");
       setInitialGameState,
     };
   })(gameBoard);
-
-
-
-
-
 
   export {gameBoard,gameController};

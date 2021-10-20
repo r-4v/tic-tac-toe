@@ -1,4 +1,3 @@
-//import { gameBoard } from "./app";
 const actionNodes = (function () {
     let gameGrid = document.querySelector("#game-grid");
     let playerTurnDiv = document.querySelector("#player-turn");
@@ -13,8 +12,7 @@ const actionNodes = (function () {
       });}
     return {resetButton, playerTurnDiv,gameGrid ,gameInfoDisplay,removeListeners};
   })();
-
-  // dom stuff
+  
   const domStuff = (function(){
       function resetGrid(){
     actionNodes.gameGrid.innerHTML = "";
