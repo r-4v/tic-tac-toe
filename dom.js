@@ -24,7 +24,10 @@ const selectedNodes = (function () {
     );
   }
 }
+resetGrid();
 let gridItems = document.querySelectorAll(".grid-item");
+
+
   
   return {gridItems,resetGrid};
   
