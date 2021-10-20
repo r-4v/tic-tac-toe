@@ -1,4 +1,4 @@
-import {selectedNodes,domStuff} from './domsetup.js';
+import {actionNodes,domStuff} from './domsetup.js';
 import { playerFactory } from './playerFactory.js';
 const gameBoard = (function () {
     let gameStateArray = ["", "", "", "", "", "", "", "", ""];
@@ -18,23 +18,26 @@ let playerOne = playerFactory("X");
 let playerTwo = playerFactory("O");
 
   const gameController = (function () {
-    let currentPlayerSymbol = "X";
-    selectedNodes.playerTurnDiv.innerText = "Player X turn"; // dom stuff
+    
+    let currentPlayerSymbol ;// dom stuff
+    function setInitialGameState(){
+        currentPlayerSymbol = "X";
+        actionNodes.gameInfoDisplay("Player X turn");
+    } 
     //initial stage set -----------------------------
-  
     function setCurrentPlayerSymbol(symbol) {
       currentPlayerSymbol = symbol;
     }
     function getCurrentPlayerSymbol() {
       return currentPlayerSymbol;
     }
-                                                                                        //needs selectedNodes gameBoard playerOne playerTwo playerFactory  domStuff 
+                                                                                        //needs actionNodes gameBoard playerOne playerTwo playerFactory  domStuff 
     function turnController(e) {
       if (getCurrentPlayerSymbol() === "X") {
-        selectedNodes.playerTurnDiv.innerText = "Player O turn"; //dom stuff
+        actionNodes.gameInfoDisplay( "Player O turn"); //dom stuff
         playerOne.play(e);
       } else {
-        selectedNodes.playerTurnDiv.innerText = "Player X turn"; //dom stuff
+        actionNodes.gameInfoDisplay("Player X turn"); //dom stuff
         playerTwo.play(e);
       }
     }
@@ -50,26 +53,22 @@ let playerTwo = playerFactory("O");
       checkTieState();
       checkWinState();
       if (gameBoard.getGameState().indexOf("") !== -1) {
-        e.target.innerText = currentPlayerSymbol; //dom stuff
+        domStuff.playerChoiceSetter(e,currentPlayerSymbol); //dom stuff
         turnController(e);
       }
     }
     function checkTieState(){
       if (gameBoard.getGameState().indexOf("") === -1 && !(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState())){
         console.log("game tied");
-        selectedNodes.playerTurnDiv.innerText = "Game Tied"; //dom stuff
+        actionNodes.gameInfoDisplay("Game Tied"); //dom stuff
       }
     }
     function checkWinState() {
       if (playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState()) {
         console.log(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState());
         //dom stuff
-        selectedNodes.playerTurnDiv.innerText =
-          playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState();
-        domStuff.gridItems.forEach((gridItem) => {
-          gridItem.replaceWith(gridItem.cloneNode(true));
-          console.log("removing listeners");
-        });//dom stuff
+        actionNodes.gameInfoDisplay(playerOne.checkPlayerWinState() || playerTwo.checkPlayerWinState());
+        actionNodes.removeListeners();
       }
     }
   
@@ -78,6 +77,7 @@ let playerTwo = playerFactory("O");
       placeSymbol,
       setCurrentPlayerSymbol,
       getCurrentPlayerSymbol,
+      setInitialGameState,
     };
   })(gameBoard);
 

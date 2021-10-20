@@ -1,6 +1,5 @@
 import { gameController } from "./gameLogic.js";
-import {selectedNodes,domStuff} from './domsetup.js';
-
+import {domStuff} from './domsetup.js';
 const dynamicListeners = (function () {
     function attachListeners(){
       console.log("attaching");

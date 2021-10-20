@@ -1,4 +1,4 @@
-import {selectedNodes,domStuff} from './domsetup.js';
+import {actionNodes,domStuff} from './domsetup.js';
 import { dynamicListeners } from './domManipulate.js';
 import {gameBoard,gameController} from './gameLogic.js';
 function startGame()
@@ -11,6 +11,7 @@ gameBoard.resetGameState();
 domStuff.resetGrid();
 domStuff.gridItems = document.querySelectorAll(".grid-item");
 //dom manipulate
+gameController.setInitialGameState();
 dynamicListeners.attachListeners();
 
 }
