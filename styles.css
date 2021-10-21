@@ -1,7 +1,8 @@
 body{
     background-color:#1a1a1d;
-    height: 100vh;
+    height: 95vh;
     width: 100vw;
+    background-attachment: fixed;
 display:flex;
 flex-direction: column;
 justify-content: center;
